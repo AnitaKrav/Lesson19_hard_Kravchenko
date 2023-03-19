@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, abort
 from flask_restx import Namespace, Resource
 from implemented import auth_service
 
@@ -14,18 +14,18 @@ class AuthView(Resource):
         password = req_json.get('password')
 
         if None in [username, password]:
-            return 400
+            abort(400)
 
         tokens = auth_service.generate_token(username, password)
-        return tokens, 201
+        return tokens, 200
 
     def put(self):
         req_json = request.json
         token = req_json.get('refresh_token')
 
         if token is None:
-            return 400
+            abort(400)
 
         tokens = auth_service.refresh_token(token)
 
-        return tokens, 201
+        return tokens, 200
